@@ -1,10 +1,11 @@
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreatePlaceDto {
+export class CreatePhotoDto {
     @IsString()
     @IsNotEmpty()
     public name: string;
 
-    @IsBoolean()
-    public like: boolean;
+    @IsString()
+    @IsNotEmpty()
+    filename: string
 }

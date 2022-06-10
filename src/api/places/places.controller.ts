@@ -3,7 +3,6 @@ import { Inject, Controller, Get, Post, Patch, Param, ParseIntPipe, Body, ParseE
 import { Place } from './places.entity';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './place.dto';
-import { IPlaceParams } from './interfaces';
 
 @Controller('api/places')
 export class PlacesController {

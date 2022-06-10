@@ -1,4 +1,4 @@
-import { Like } from "typeorm"
+import { ILike } from "typeorm"
 
 export default function createFilter(params: object = {}): object | null {
     let filter = {}
@@ -6,7 +6,7 @@ export default function createFilter(params: object = {}): object | null {
 
     Object.keys(params).forEach((key) => {
         if (!skipParams.includes(key)) {
-            filter[key] = Like(`%${params[key]}%`)
+            filter[key] = ILike(`%${params[key]}%`)
         }
     })
 
