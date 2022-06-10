@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Place } from './places.entity';
 import { CreatePlaceDto } from './place.dto';
 import createFilter from './filter';
+import { IPlaceParams } from './interfaces'
 
 @Injectable()
 export class PlacesService {
@@ -21,10 +22,10 @@ export class PlacesService {
         return findElem;
     }
 
-    public async findPlace(params: any = {}): Promise<object> {
+    public async findPlace(params: IPlaceParams): Promise<object> {
         const filter = createFilter(params)
-        const take = params.take || 10
-        const skip = params.skip || 0
+        const take = params?.take || 10
+        const skip = params?.skip || 0
 
         const [result, total] = await this.repository.findAndCount({ where: filter, take, skip })
         if (!result) {

@@ -3,6 +3,7 @@ import { Inject, Controller, Get, Post, Patch, Param, ParseIntPipe, Body, ParseE
 import { Place } from './places.entity';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './place.dto';
+import { IPlaceParams } from './interfaces';
 
 @Controller('places')
 export class PlacesController {
@@ -15,7 +16,7 @@ export class PlacesController {
     }
 
     @Get()
-    public async findPlace(@Query('params') params: object = {}): Promise<object> {
+    public async findPlace(@Query('params') params: IPlaceParams): Promise<object> {
         return await this.services.findPlace(params);
     }
 
