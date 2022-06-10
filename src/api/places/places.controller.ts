@@ -15,7 +15,7 @@ export class PlacesController {
     }
 
     @Get()
-    public async findPlace(@Query('params') params: object): Promise<Place[]> {
+    public async findPlace(@Query('params') params: object = {}): Promise<object> {
         return await this.services.findPlace(params);
     }
 

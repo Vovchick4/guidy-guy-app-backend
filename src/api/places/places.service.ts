@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Place } from './places.entity';
 import { CreatePlaceDto } from './place.dto';
+import createFilter from './filter';
 
 @Injectable()
 export class PlacesService {
@@ -20,13 +21,20 @@ export class PlacesService {
         return findElem;
     }
 
-    public async findPlace(params: object): Promise<Place[]> {
-        const findPlace = await this.repository.find({})
-        if (!findPlace) {
+    public async findPlace(params: any = {}): Promise<object> {
+        const filter = createFilter(params)
+        const take = params.take || 10
+        const skip = params.skip || 0
+
+        const [result, total] = await this.repository.findAndCount({ where: filter, take, skip })
+        if (!result) {
             throw new HttpException('Not Found Place', HttpStatus.NOT_FOUND)
         }
 
-        return findPlace;
+        return {
+            data: result,
+            total
+        };
     }
 
     public async createPlace(body: CreatePlaceDto): Promise<Place> {
