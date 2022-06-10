@@ -4,4 +4,4 @@ import { PlacesModule } from './places/places.module';
 @Module({
   imports: [PlacesModule]
 })
-export class ApiModule {}
+export class ApiModule { }

@@ -22,10 +22,10 @@ export class PlacesService {
         return findElem;
     }
 
-    public async findPlace(params: IPlaceParams): Promise<object> {
-        const filter = createFilter(params)
-        const take = params?.take || 10
-        const skip = params?.skip || 0
+    public async findPlace(query: IPlaceParams): Promise<object> {
+        const filter = createFilter(query)
+        const take = query?.take || 10
+        const skip = query?.skip || 0
 
         const [result, total] = await this.repository.findAndCount({ where: filter, take, skip })
         if (!result) {

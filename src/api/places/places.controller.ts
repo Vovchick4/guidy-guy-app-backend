@@ -5,7 +5,7 @@ import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './place.dto';
 import { IPlaceParams } from './interfaces';
 
-@Controller('places')
+@Controller('api/places')
 export class PlacesController {
     @Inject(PlacesService)
     private readonly services: PlacesService;
@@ -16,8 +16,8 @@ export class PlacesController {
     }
 
     @Get()
-    public async findPlace(@Query('params') params: IPlaceParams): Promise<object> {
-        return await this.services.findPlace(params);
+    public async findPlace(@Query() query): Promise<object> {
+        return await this.services.findPlace(query);
     }
 
     @Post()
