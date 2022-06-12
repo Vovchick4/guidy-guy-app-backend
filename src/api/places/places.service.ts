@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -6,11 +6,14 @@ import { Place } from './places.entity';
 import { CreatePlaceDto } from './place.dto';
 import createFilter from './filter';
 import { IPlaceParams } from './interfaces'
+import { PhotoService } from '../photo/photo.service';
 
 @Injectable()
 export class PlacesService {
     @InjectRepository(Place)
     private readonly repository: Repository<Place>
+    @Inject(PhotoService)
+    private readonly photoServices: PhotoService
 
     public async findPlaceById(id: number): Promise<Place> {
         const findElem = await this.repository.findOne({ where: { id } });
@@ -41,7 +44,43 @@ export class PlacesService {
     public async createPlace(body: CreatePlaceDto): Promise<Place> {
         const place: Place = new Place();
         place.name = body.name;
+        place.like = body.like;
         return await this.repository.save(place);
+    }
+
+    public async uploadPhoto(body: CreatePlaceDto, imageBuffer: Buffer, filename: string) {
+        const avatar = await this.photoServices.createPhoto(imageBuffer, filename);
+        await this.repository.update(body, {
+            photoId: avatar.id
+        })
+        return avatar
+        // const queryRunner = this.connection.createQueryRunner();
+
+        // await queryRunner.connect();
+        // await queryRunner.startTransaction();
+
+        // try {
+        //     const place = await queryRunner.manager.findOne(Place, placeId);
+        //     const photoId = place.photoId;
+        //     const photo = await this.photoServices.createPhoto(imageBuffer, filename, queryRunner);
+
+        //     await queryRunner.manager.update(Place, placeId, {
+        //         id: photo.id
+        //     });
+
+        //     if (photoId) {
+        //         await this.photoServices.deletePhoto(photoId, queryRunner);
+        //     }
+
+        //     await queryRunner.commitTransaction();
+
+        //     return photo;
+        // } catch {
+        //     await queryRunner.rollbackTransaction();
+        //     throw new InternalServerErrorException();
+        // } finally {
+        //     await queryRunner.release();
+        // }
     }
 
     public async updatePlace(id: number, body: CreatePlaceDto): Promise<Place> {
