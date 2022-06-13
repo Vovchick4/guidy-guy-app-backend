@@ -12,6 +12,9 @@ export class Place {
     @Column({ type: 'boolean' })
     public like: boolean;
 
+    @Column({ type: 'varchar', generated: 'uuid' })
+    public uuid: string;
+
     // Relaiton to Photos
     @JoinColumn({ name: 'avatarId' })
     @OneToOne(

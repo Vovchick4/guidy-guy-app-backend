@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,17 +9,16 @@ import { AppService } from './app.service';
 import { getEnvPath } from './common/helper/env.helper';
 
 // TypeOrmService
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmConfigService } from './shared/typeorm/typeorm.service';
 import { ApiModule } from './api/api.module';
+import * as ormconfig from './ormconfig';
 
 // Set env Files '
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot(ormconfig),
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
-    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     ApiModule
   ],
   controllers: [AppController],
