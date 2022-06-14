@@ -17,7 +17,7 @@ export class PhotoService {
     public async createPhoto(dataBuffer: Buffer, filename: string): Promise<Photo> {
         const newFile = this.photoRepository.create({
             filename,
-            data: dataBuffer
+            // data: dataBuffer
         })
         return await this.photoRepository.save(newFile);
     }

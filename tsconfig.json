@@ -20,7 +20,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "ormconfig.ts"  ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
