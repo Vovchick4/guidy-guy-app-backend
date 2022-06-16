@@ -1,5 +1,5 @@
 import FastifyReply from 'fastify-reply-from'
-import { Body, Req, Res, Controller, HttpCode, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Req, Res, Controller, HttpCode, Get, Post, UseGuards, Inject } from '@nestjs/common';
 
 import { LocalAuthnGuard } from './local.guard';
 import { AuthService } from './auth.service';
@@ -9,6 +9,7 @@ import JwtAuthenticationGuard from './jwt.auth.guard';
 
 @Controller('api/auth')
 export class AuthController {
+    @Inject(AuthService)
     private readonly authService: AuthService
 
     @Post('sign-up')

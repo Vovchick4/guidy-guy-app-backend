@@ -8,10 +8,15 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app =
-    await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+    await NestFactory.create<NestExpressApplication>(AppModule);
   const config: ConfigService = app.get(ConfigService);
   const port: number = config.get<number>('PORT');
 
+  app.enableCors({
+    origin: "http://localhost:3000",
+    allowedHeaders: "*",
+    credentials: true,
+  })
   app.use(cookieParser())
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
 

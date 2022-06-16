@@ -1,22 +1,26 @@
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 import { Inject, Injectable, HttpException, HttpStatus } from "@nestjs/common";
 
 import { CreateUserDto } from "../users/users.dto";
 import { UsersService } from "../users/users.service";
 import { User } from '../users/users.entity';
 import { TokenPayload } from './interfaces';
+import { PostgresErrorCode } from '../../db/postgresErrorCodes.enum';
 
 @Injectable()
 export class AuthService {
     @Inject(UsersService)
     private readonly usersService: UsersService
+    @Inject(JwtService)
     private readonly jwtService: JwtService
+    @Inject(ConfigService)
     private readonly configService: ConfigService
 
     public async register(data: CreateUserDto): Promise<User> {
         const hashedPassword = await bcrypt.hash(data.password, 10);
+
         try {
             const createdUser = await this.usersService.create({
                 ...data,
@@ -28,19 +32,16 @@ export class AuthService {
             if (error?.code === PostgresErrorCode.UniqueViolation) {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
             }
+            console.log(error);
             throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     public async logIn(email: string, password: string) {
-        try {
-            const user = await this.usersService.findOne(email);
-            await this.verifyPassword(password, user.password);
-            user.password = undefined;
-            return user;
-        } catch (error) {
-            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
-        }
+        const user = await this.usersService.findOne(email);
+        await this.verifyPassword(password, user.password);
+        user.password = undefined;
+        return user;
     }
 
     private async verifyPassword(password: string, hashedPassword: string) {
@@ -49,7 +50,7 @@ export class AuthService {
             hashedPassword
         );
         if (!isPasswordMatching) {
-            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
+            throw new HttpException('Password is not correct', HttpStatus.BAD_REQUEST);
         }
     }
 
