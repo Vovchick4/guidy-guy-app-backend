@@ -26,7 +26,7 @@ export class UsersService {
         throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
     }
 
-    async create(data: CreateUserDto) {
+    async create(data: any) {
         const newUser = this.userRepo.create(data);
         await this.userRepo.save(newUser);
         return newUser;
