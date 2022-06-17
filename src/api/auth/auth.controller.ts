@@ -13,8 +13,12 @@ export class AuthController {
     private readonly authService: AuthService
 
     @Post('sign-up')
-    async signUp(@Body() data: CreateUserDto) {
-        return this.authService.register(data);
+    async signUp(@Body() data: CreateUserDto, @Res() response: FastifyReply) {
+        const createdUser: any = await this.authService.register(data);
+        const cookie = this.authService.getCookieWithJwtToken(createdUser.id);
+        response.setHeader('Set-Cookie', cookie);
+        createdUser.password = undefined;
+        return response.send(createdUser);
     }
 
     @HttpCode(200)
