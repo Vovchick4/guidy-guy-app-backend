@@ -22,6 +22,11 @@ export class PlacesController {
         return await this.services.findPlace(query);
     }
 
+    @Get('random/data')
+    public async generatePlaces(@Query() query): Promise<Place[]> {
+        return await this.services.generatePlaces();
+    }
+
     @Post()
     public async createPlace(@Body() body: CreatePlaceDto): Promise<Place> {
         return await this.services.createPlace(body);

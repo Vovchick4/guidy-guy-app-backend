@@ -4,8 +4,9 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PlacesModule } from './places/places.module';
 import { PhotoModule } from './photo/photo.module';
+import { QuestModule } from './quest/quest.module';
 
 @Module({
-  imports: [PlacesModule, PhotoModule, UsersModule, AuthModule]
+  imports: [PlacesModule, QuestModule, PhotoModule, UsersModule, AuthModule]
 })
 export class ApiModule { }

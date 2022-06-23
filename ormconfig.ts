@@ -6,9 +6,10 @@
 // You can also make a singleton service that load and expose the .env file content.
 // ...
 
+import { Quest } from "src/api/quest/quest.entity";
 import { User } from "src/api/users/users.entity";
-import { Photo } from "./src/api/photo/photo.entity";
-import { Place } from "./src/api/places/places.entity";
+import { Photo } from "src/api/photo/photo.entity";
+import { Place } from "src/api/places/places.entity";
 
 // Check typeORM documentation for more information.
 const config: any = {
@@ -18,7 +19,7 @@ const config: any = {
     username: 'postgres',
     password: 'fr#)&z$Yd3+*&Kg',
     database: 'guidy_guy_app_api',
-    entities: [Place, Photo, User],
+    entities: [Place, Photo, User, Quest],
 
     // We are using migrations, synchronize should be set to false.
     synchronize: true,

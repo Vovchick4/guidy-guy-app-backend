@@ -15,7 +15,7 @@ export class UsersService {
         if (findUser) {
             return findUser
         }
-        throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
+        throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
     }
 
     async findOne(email: string): Promise<User> {

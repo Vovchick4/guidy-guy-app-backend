@@ -83,6 +83,26 @@ export class PlacesService {
         // }
     }
 
+    public async generatePlaces(places: Array<Place> = [], count: number = 5): Promise<Place[]> {
+        try {
+            let whereStr: string = ""
+            if (places.length >= 1) {
+                places.forEach(({ id }) => {
+                    whereStr += `place.id != ${id}`
+                    if (places[places.length - 1].id !== id) {
+                        whereStr += " and "
+                    }
+                });
+            }
+
+            // select("place.id").from(Place, "place")
+            const generatedPlaces = await this.repository.createQueryBuilder("place").where(whereStr).orderBy("RANDOM()").limit(count).getMany()
+            return generatedPlaces
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     public async updatePlace(id: number, body: CreatePlaceDto): Promise<Place> {
         const findPlace: any = this.findPlaceById(id);
         findPlace.name = body.name;

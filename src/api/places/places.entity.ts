@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToOne, ManyToMany } from 'typeorm';
+import { Geometry, Point } from 'geojson';
+import { Quest } from '../quest/quest.entity';
 import { Photo } from '../photo/photo.entity';
 
 @Entity()
@@ -15,6 +17,14 @@ export class Place {
     @Column({ type: 'varchar', generated: 'uuid' })
     public uuid: string;
 
+    @Column({
+        type: "geography",
+        spatialFeatureType: "Point",
+        srid: 4326,
+        nullable: true
+    })
+    public coordinates: Point
+
     // Relaiton to Photos
     @JoinColumn({ name: 'avatarId' })
     @OneToOne(
@@ -27,4 +37,7 @@ export class Place {
 
     @Column({ nullable: true })
     public photoId?: number;
+
+    @ManyToMany(() => Quest, quest => quest.places)
+    public quests: Quest[]
 }
