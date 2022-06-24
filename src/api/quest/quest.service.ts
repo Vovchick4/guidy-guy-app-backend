@@ -6,6 +6,9 @@ import { Quest } from './quest.entity';
 import { PlacesService } from '../places/places.service';
 import { UsersService } from '../users/users.service';
 import { IQuestQuery } from "./quest.interface"
+import { User } from '../users/users.entity';
+import { Point } from 'geojson';
+import { Place } from '../places/places.entity';
 
 @Injectable()
 export class QuestService {
@@ -36,6 +39,26 @@ export class QuestService {
         const generetedPalces = await this.placeService.generatePlaces(skipPlaceForQuest, query.count)
         const create = this.questRepo.create({ name: query.name, userId, places: generetedPalces })
         return await this.questRepo.save(create)
+    }
+
+    async checkQuestPlace(placeId: number, user: User, userCoords: Point, questUUID: string) {
+        const findIsPlaceQuest = await this.findOneQuestById(user.id, questUUID)
+        if (!findIsPlaceQuest) {
+            throw new HttpException("Not Found Quest with this user id and questId", HttpStatus.NOT_FOUND);
+        } else if (!findIsPlaceQuest.places.find(({ id }) => id === placeId)) {
+            throw new HttpException("Not Found Place in this Quest", HttpStatus.NOT_FOUND);
+        }
+
+        const findPlace = await this.placeService.findPlaceById(placeId)
+        const { coordinates: { coordinates: placeCoords } } = findPlace
+        const { coordinates } = userCoords
+        const userRadius = 0.003
+        if ((coordinates[0] <= placeCoords[0] - userRadius && coordinates[0] >= placeCoords[0] + userRadius)
+            && (coordinates[1] <= placeCoords[1] - userRadius && coordinates[1] >= placeCoords[1] + userRadius)) {
+            throw new HttpException("Complete!", HttpStatus.FOUND);
+        } else {
+            throw new HttpException("Your location not near to this place", HttpStatus.NOT_FOUND);
+        }
     }
 
     async findAllQuests(): Promise<Quest[]> {
