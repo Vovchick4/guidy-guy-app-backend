@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt'
 import { Inject, Injectable, HttpException, HttpStatus } from "@nestjs/common";
 
-import { CreateUserDto } from "../users/users.dto";
+import { CreateUserDto } from 'src/api/users/users.dto';
 import { UsersService } from "../users/users.service";
 import { User } from '../users/users.entity';
 import { TokenPayload } from './interfaces';

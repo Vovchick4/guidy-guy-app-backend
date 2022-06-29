@@ -7,3 +7,7 @@ export interface RequestWithUser {
 export interface TokenPayload {
     userId: number;
 }
+
+export interface VerificationTokenPayload {
+    email: string;
+}

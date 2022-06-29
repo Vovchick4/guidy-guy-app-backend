@@ -10,6 +10,14 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>
 
+    async findAll(): Promise<User[]> {
+        const findUser = await this.userRepo.find({})
+        if (findUser) {
+            return findUser
+        }
+        throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
+    }
+
     async findOneById(id: number): Promise<User> {
         const findUser = await this.userRepo.findOne({ where: { id } })
         if (findUser) {
@@ -24,6 +32,12 @@ export class UsersService {
             return findUser
         }
         throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    async markEmailAsConfirmed(email: string) {
+        return await this.userRepo.update({ email }, {
+            verify_at: new Date().toLocaleDateString()
+        });
     }
 
     async create(data: any) {

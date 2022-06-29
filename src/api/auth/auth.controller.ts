@@ -1,6 +1,7 @@
 import FastifyReply from 'fastify-reply-from'
 import { Body, Req, Res, Controller, HttpCode, Get, Post, UseGuards, Inject } from '@nestjs/common';
 
+import { EmailConfirmationService } from '../email/emailConfirmation.service';
 import { LocalAuthnGuard } from './local.guard';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/users.dto';
@@ -8,11 +9,13 @@ import { RequestWithUser } from './interfaces';
 import JwtAuthenticationGuard from './jwt.auth.guard';
 import RoleGuard from './role.guard';
 import Role from './role.enum';
+import { EmailConfirmationGuard } from '../email/emailConfirmation.guard';
 
 @Controller('api/auth')
 export class AuthController {
     @Inject(AuthService)
     private readonly authService: AuthService
+    private readonly emailConfirmationService: EmailConfirmationService
 
     @Post('sign-up')
     async signUp(@Body() data: CreateUserDto, @Res() response: FastifyReply) {
@@ -20,10 +23,12 @@ export class AuthController {
         const cookie = this.authService.getCookieWithJwtToken(createdUser.id);
         response.setHeader('Set-Cookie', cookie);
         createdUser.password = undefined;
+        await this.emailConfirmationService.sendVerificationLink(createdUser.email);
         return response.send(createdUser);
     }
 
     @HttpCode(200)
+    @UseGuards(EmailConfirmationGuard)
     @UseGuards(JwtAuthenticationGuard)
     @UseGuards(RoleGuard(Role.admin))
     @Post('sign-up-admin')
@@ -31,6 +36,7 @@ export class AuthController {
         const newDataWithAdminRole = { ...data, role: Role.admin }
         const createdUser: any = await this.authService.register(newDataWithAdminRole);
         createdUser.password = undefined;
+        await this.emailConfirmationService.sendVerificationLink(createdUser.email);
         return response.send(createdUser);
     }
 
@@ -49,7 +55,7 @@ export class AuthController {
     @Post('log-out')
     async logOut(@Req() request: RequestWithUser, @Res() response: FastifyReply) {
         response.setHeader('Set-Cookie', this.authService.getCookieForLogOut());
-        return response.sendStatus(200);
+        return response.send({ text: "User Log Out Account" });
     }
 
     @UseGuards(JwtAuthenticationGuard)

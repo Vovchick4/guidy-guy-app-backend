@@ -15,6 +15,9 @@ export class User {
     @Column({ type: 'enum', enum: Role, default: Role.user })
     public role: Role;
 
+    @Column({ type: 'date', default: null })
+    public verify_at: string;
+
     @Column()
     public password: string
 }

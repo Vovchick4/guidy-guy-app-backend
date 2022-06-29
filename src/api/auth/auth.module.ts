@@ -11,6 +11,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { UsersService } from '../users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/users.entity';
+import { EmailConfirmationService } from '../email/emailConfirmation.service';
+import EmailService from '../email/email.service';
 
 @Module({
     imports: [
@@ -28,7 +30,7 @@ import { User } from '../users/users.entity';
                 }
             }),
         })],
-    providers: [AuthService, UsersService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, UsersService, EmailService, EmailConfirmationService, LocalStrategy, JwtStrategy],
     controllers: [AuthController],
 })
 export class AuthModule { }
