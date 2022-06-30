@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
@@ -8,9 +8,13 @@ import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class EmailConfirmationService {
+  @Inject(JwtService)
   private readonly jwtService: JwtService
+  @Inject(ConfigService)
   private readonly configService: ConfigService
+  @Inject(EmailService)
   private readonly emailService: EmailService
+  @Inject(UsersService)
   private readonly usersService: UsersService
 
   public async confirmEmail(email: string) {
@@ -50,8 +54,8 @@ export class EmailConfirmationService {
   public sendVerificationLink(email: string) {
     const payload: VerificationTokenPayload = { email };
     const token = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
-      expiresIn: `${this.configService.get('JWT_VERIFICATION_TOKEN_EXPIRATION_TIME')}s`
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}s`
     });
 
     const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;

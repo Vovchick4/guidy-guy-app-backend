@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 import { User } from './users.entity';
 import { UsersService } from './users.service';
@@ -11,6 +12,6 @@ import EmailService from '../email/email.service';
     imports: [TypeOrmModule.forFeature([User])],
     exports: [UsersService],
     controllers: [UserController],
-    providers: [UsersService, EmailService, EmailConfirmationService]
+    providers: [UsersService, EmailService, EmailConfirmationService, JwtService]
 })
 export class UsersModule { }

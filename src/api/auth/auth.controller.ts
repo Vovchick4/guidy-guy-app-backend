@@ -15,6 +15,7 @@ import { EmailConfirmationGuard } from '../email/emailConfirmation.guard';
 export class AuthController {
     @Inject(AuthService)
     private readonly authService: AuthService
+    @Inject(EmailConfirmationService)
     private readonly emailConfirmationService: EmailConfirmationService
 
     @Post('sign-up')
