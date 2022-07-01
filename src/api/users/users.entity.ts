@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import Role from '../auth/role.enum';
 
 @Entity()
@@ -17,6 +18,12 @@ export class User {
 
     @Column({ type: 'date', default: null })
     public verify_at: string;
+
+    @Column({
+        nullable: true
+    })
+    @Exclude()
+    public currentHashedRefreshToken?: string;
 
     @Column()
     public password: string

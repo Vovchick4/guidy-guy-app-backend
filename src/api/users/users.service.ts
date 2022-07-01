@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt'
 
 import { User } from './users.entity';
 import { CreateUserDto } from './users.dto';
@@ -44,5 +45,31 @@ export class UsersService {
         const newUser = this.userRepo.create(data);
         await this.userRepo.save(newUser);
         return newUser;
+    }
+
+    async removeRefreshToken(userId: number) {
+        return await this.userRepo.update(userId, {
+            currentHashedRefreshToken: null
+        });
+    }
+
+    async setCurrentRefreshToken(refreshToken: string, userId: number) {
+        const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+        await this.userRepo.update(userId, {
+            currentHashedRefreshToken
+        });
+    }
+
+    async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
+        const user = await this.findOneById(userId);
+
+        const isRefreshTokenMatching = await bcrypt.compare(
+            refreshToken,
+            user.currentHashedRefreshToken
+        );
+
+        if (isRefreshTokenMatching) {
+            return user;
+        }
     }
 }

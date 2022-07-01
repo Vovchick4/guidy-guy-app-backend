@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { JwtRefreshTokenStrategy } from './jwtRefresh.strategy';
 import { UsersService } from '../users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/users.entity';
@@ -26,13 +27,13 @@ import { EmailModule } from '../email/email.module';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
-                secret: configService.get('JWT_SECRET'),
+                secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
                 signOptions: {
-                    expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}s`,
+                    expiresIn: `${configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}s`,
                 }
             }),
         })],
-    providers: [AuthService, UsersService, EmailService, EmailConfirmationService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, UsersService, EmailService, EmailConfirmationService, LocalStrategy, JwtStrategy, JwtRefreshTokenStrategy],
     controllers: [AuthController],
 })
 export class AuthModule { }

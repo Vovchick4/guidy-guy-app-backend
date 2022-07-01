@@ -27,7 +27,7 @@ export class PlacesService {
 
     public async findPlace(query: IPlaceParams): Promise<object> {
         const filter = createFilter(query)
-        const take = query?.take || 10
+        const take = query?.take || 8
         const skip = query?.skip || 0
 
         const [result, total] = await this.repository.findAndCount({ where: filter, take, skip })

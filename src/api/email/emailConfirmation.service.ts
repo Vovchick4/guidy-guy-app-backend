@@ -28,7 +28,7 @@ export class EmailConfirmationService {
   public async decodeConfirmationToken(token: string) {
     try {
       const payload = await this.jwtService.verify(token, {
-        secret: this.configService.get('JWT_SECRET'),
+        secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
       });
 
       if (typeof payload === 'object' && 'email' in payload) {
@@ -54,8 +54,8 @@ export class EmailConfirmationService {
   public sendVerificationLink(email: string) {
     const payload: VerificationTokenPayload = { email };
     const token = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}s`
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}s`
     });
 
     const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
