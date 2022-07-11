@@ -26,7 +26,7 @@ export class QuestService {
             throw new HttpException("You must provice name QUEST", HttpStatus.UNPROCESSABLE_ENTITY)
         }
 
-        const userQuests = await this.findAllQuestByUserId(userId);
+        const userQuests = await this.findAllQuestsByUserId(userId);
         let skipPlaceForQuest = []
 
         if (userQuests) {
@@ -79,7 +79,7 @@ export class QuestService {
         return result
     }
 
-    async findAllQuestByUserId(userId: number): Promise<Quest[]> {
+    async findAllQuestsByUserId(userId: number): Promise<Quest[]> {
         // Find All User Quests
         const result = await this.questRepo.find({ where: { userId } })
         if (!result) {

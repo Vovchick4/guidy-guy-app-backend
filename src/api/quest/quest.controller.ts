@@ -11,12 +11,25 @@ export class QuestController {
     @Inject(QuestService)
     private readonly questServices: QuestService
 
-    // @UseGuards(JwtAuthenticationGuard)
+    @UseGuards(JwtAuthenticationGuard)
     @Post("create/:userId")
     async createQuest(@Param("userId", ParseIntPipe) userId: number, @Query() query: IQuestQuery): Promise<Quest> {
         return await this.questServices.createQuest(userId, query)
     }
 
+    @UseGuards(JwtAuthenticationGuard)
+    @Get("/:userId")
+    async findAllQuestsByUserId(@Param("userId", ParseIntPipe) userId: number): Promise<Quest[]> {
+        return await this.questServices.findAllQuestsByUserId(userId)
+    }
+
+    @UseGuards(JwtAuthenticationGuard)
+    @Get("/:userId/:questId")
+    async findOneQuestById(@Param("userId", ParseIntPipe) userId: number, @Param("questId", ParseIntPipe) questId: string): Promise<Quest> {
+        return await this.questServices.findOneQuestById(userId, questId)
+    }
+
+    @UseGuards(JwtAuthenticationGuard)
     @Get("find-all")
     async findAllQuests(): Promise<Quest[]> {
         return await this.questServices.findAllQuests()

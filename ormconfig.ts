@@ -14,11 +14,11 @@ import { Place } from "src/api/places/places.entity";
 // Check typeORM documentation for more information.
 const config: any = {
     type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'fr#)&z$Yd3+*&Kg',
-    database: 'guidy_guy_app_api',
+    host: process.env.DATABASE_HOST,
+    port: process.env.DATABASE_PORT,
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
     entities: [Place, Photo, User, Quest],
 
     // We are using migrations, synchronize should be set to false.

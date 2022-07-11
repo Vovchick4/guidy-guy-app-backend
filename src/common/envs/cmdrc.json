@@ -1,0 +1,26 @@
+{
+  "development": {
+    "PORT": 4000,
+    "NODE_ENV": "development",
+    "BASE_URL": "http://localhost:4000",
+    "DATABASE_HOST": "localhost",
+    "DATABASE_NAME": "guidy_guy_app_api",
+    "DATABASE_PORT": 5432,
+    "DATABASE_USER": "postgres",
+    "DATABASE_PASSWORD": "fr#)&z$Yd3+*&Kg",
+    "JWT_ACCESS_TOKEN_SECRET": "JWT_TOKEN_SECRET_AUTH",
+    "JWT_ACCESS_TOKEN_EXPIRATION_TIME": 900,
+    "JWT_REFRESH_TOKEN_SECRET": "JWT_TOKEN_SECRET_REFRESH_AUTH",
+    "JWT_REFRESH_TOKEN_EXPIRATION_TIME": 604800,
+    "EMAIL_CONFIRMATION_URL": "http://localhost:3000/confirm-email",
+    "EMAIL_SERVICE": "gmail",
+    "EMAIL_USER": "guidyguyservice@gmail.com",
+    "EMAIL_PASSWORD": "UBS5TjnP"
+  },
+  "production": {
+    "NODE_ENV": "production",
+    "NODE_OPTIONS": "--http-parser=legacy",
+    "BASE_URL": "",
+    "DATABASE_HOST": ""
+  }
+}
