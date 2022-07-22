@@ -41,11 +41,11 @@ export class QuestService {
         return await this.questRepo.save(create)
     }
 
-    async checkQuestPlace(placeId: number, user: User, userCoords: Point, questUUID: string) {
+    async checkQuestPlace(placeId: string, user: User, userCoords: Point, questUUID: string) {
         const findIsPlaceQuest = await this.findOneQuestById(user.id, questUUID)
         if (!findIsPlaceQuest) {
             throw new HttpException("Not Found Quest with this user id and questId", HttpStatus.NOT_FOUND);
-        } else if (!findIsPlaceQuest.places.find(({ id }) => id === placeId)) {
+        } else if (!findIsPlaceQuest.places.find(({ uuid }) => uuid === placeId)) {
             throw new HttpException("Not Found Place in this Quest", HttpStatus.NOT_FOUND);
         }
 

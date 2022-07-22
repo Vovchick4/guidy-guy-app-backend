@@ -1,6 +1,6 @@
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Inject, Controller, Get, Post, Patch, Param, ParseIntPipe, Body, Delete, Query, UseInterceptors, Req, UploadedFile } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Param, ParseIntPipe, Body, Delete, Query, UseInterceptors, Req, UploadedFile, ParseUUIDPipe } from '@nestjs/common';
 
 import { Place } from './places.entity';
 import { PlacesService } from './places.service';
@@ -13,7 +13,7 @@ export class PlacesController {
     private readonly services: PlacesService
 
     @Get('/:placeId')
-    public async findPlaceById(@Param('placeId', ParseIntPipe) placeId: number): Promise<Place> {
+    public async findPlaceById(@Param('placeId', ParseUUIDPipe) placeId: string): Promise<Place> {
         return await this.services.findPlaceById(placeId);
     }
 
@@ -39,12 +39,12 @@ export class PlacesController {
     }
 
     @Patch('/:placeId')
-    public async updatePlace(@Param('placeId', ParseIntPipe) placeId: number, @Body() body: CreatePlaceDto): Promise<Place> {
+    public async updatePlace(@Param('placeId', ParseUUIDPipe) placeId: string, @Body() body: CreatePlaceDto): Promise<Place> {
         return await this.services.updatePlace(placeId, body);
     }
 
     @Delete('/:placeId')
-    public async removePlace(@Param('placeId', ParseIntPipe) placeId: number): Promise<void> {
+    public async removePlace(@Param('placeId', ParseUUIDPipe) placeId: string): Promise<void> {
         return await this.services.removePlace(placeId);
     }
 }

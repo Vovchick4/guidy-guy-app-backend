@@ -15,8 +15,8 @@ export class PlacesService {
     @Inject(PhotoService)
     private readonly photoServices: PhotoService
 
-    public async findPlaceById(id: number): Promise<Place> {
-        const findElem = await this.repository.findOne({ where: { id } });
+    public async findPlaceById(uuid: string): Promise<Place> {
+        const findElem = await this.repository.findOne({ where: { uuid } });
 
         if (!findElem) {
             throw new HttpException('Not Found Place', HttpStatus.NOT_FOUND)
@@ -103,14 +103,14 @@ export class PlacesService {
         }
     }
 
-    public async updatePlace(id: number, body: CreatePlaceDto): Promise<Place> {
-        const findPlace: any = this.findPlaceById(id);
+    public async updatePlace(uuid: string, body: CreatePlaceDto): Promise<Place> {
+        const findPlace: any = this.findPlaceById(uuid);
         findPlace.name = body.name;
         return await this.repository.save(findPlace);
     }
 
-    public async removePlace(id: number): Promise<void> {
-        const findPlace: any = this.findPlaceById(id);
+    public async removePlace(uuid: string): Promise<void> {
+        const findPlace: any = this.findPlaceById(uuid);
         await this.repository.remove(findPlace);
     }
 }
