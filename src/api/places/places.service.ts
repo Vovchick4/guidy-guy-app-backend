@@ -30,7 +30,7 @@ export class PlacesService {
         const take = query?.take || 8
         const skip = query?.skip || 0
 
-        const [result, total] = await this.repository.findAndCount({ where: filter, take, skip })
+        const [result, total] = await this.repository.findAndCount({ where: filter, take, skip: skip * take })
         if (!result) {
             throw new HttpException('Not Found Place', HttpStatus.NOT_FOUND)
         }
