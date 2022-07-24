@@ -1,11 +1,11 @@
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Inject, Controller, Get, Post, Patch, Param, ParseIntPipe, Body, Delete, Query, UseInterceptors, Req, UploadedFile, ParseUUIDPipe } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Param, ParseIntPipe, Body, Delete, Query, UseInterceptors, Req, UploadedFile, ParseUUIDPipe, Put } from '@nestjs/common';
 
 import { Place } from './places.entity';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './place.dto';
-import { IPlaceParams } from './interfaces';
+import { IPlaceCreateParams, IPlaceParams } from './interfaces';
 
 @Controller('api/places')
 export class PlacesController {
@@ -28,7 +28,7 @@ export class PlacesController {
     }
 
     @Post()
-    public async createPlace(@Body() body: CreatePlaceDto): Promise<Place> {
+    public async createPlace(@Body() body: IPlaceCreateParams): Promise<Place> {
         return await this.services.createPlace(body);
     }
 
@@ -38,8 +38,8 @@ export class PlacesController {
         return await this.services.uploadPhoto(body, file.buffer, file.originalname);
     }
 
-    @Patch('/:placeId')
-    public async updatePlace(@Param('placeId', ParseUUIDPipe) placeId: string, @Body() body: CreatePlaceDto): Promise<Place> {
+    @Put('/:placeId')
+    public async updatePlace(@Param('placeId', ParseUUIDPipe) placeId: string, @Body() body: IPlaceCreateParams): Promise<Place> {
         return await this.services.updatePlace(placeId, body);
     }
 

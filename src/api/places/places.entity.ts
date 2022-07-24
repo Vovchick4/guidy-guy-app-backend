@@ -30,14 +30,18 @@ export class Place {
     @OneToOne(
         () => Photo,
         {
+            onUpdate: "SET NULL",
             nullable: true
-        }
+        },
     )
     public photo?: Photo;
 
     @Column({ nullable: true })
     public photoId?: number;
 
-    @ManyToMany(() => Quest, quest => quest.places)
+    @Column({ nullable: true })
+    public fileName?: string;
+
+    @ManyToMany(() => Quest, quest => quest.places, { cascade: true, onUpdate: "CASCADE", onDelete: "CASCADE" })
     public quests: Quest[]
 }

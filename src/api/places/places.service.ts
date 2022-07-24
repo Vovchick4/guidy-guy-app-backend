@@ -1,11 +1,11 @@
-import { Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Inject, Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 import { Place } from './places.entity';
 import { CreatePlaceDto } from './place.dto';
 import createFilter from './filter';
-import { IPlaceParams } from './interfaces'
+import { IPlaceParams, IPlaceCreateParams } from './interfaces'
 import { PhotoService } from '../photo/photo.service';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class PlacesService {
         const take = query?.take || 8
         const skip = query?.skip || 0
 
-        const [result, total] = await this.repository.findAndCount({ where: filter, take, skip: skip * take })
+        const [result, total] = await this.repository.findAndCount({ where: filter, take, skip: skip * take, order: { id: "ASC" } })
         if (!result) {
             throw new HttpException('Not Found Place', HttpStatus.NOT_FOUND)
         }
@@ -41,17 +41,26 @@ export class PlacesService {
         };
     }
 
-    public async createPlace(body: CreatePlaceDto): Promise<Place> {
+    public async createPlace(body: IPlaceCreateParams): Promise<Place> {
+        const { name, like, coordinates, file } = body
+
         const place: Place = new Place();
-        place.name = body.name;
-        place.like = body.like;
+        place.name = name;
+        place.like = like ? like : false;
+        place.coordinates = coordinates;
+
+        // if (file) {
+        //     this.uploadPhoto(body)
+        // }
+
         return await this.repository.save(place);
     }
 
     public async uploadPhoto(body: CreatePlaceDto, imageBuffer: Buffer, filename: string) {
         const avatar = await this.photoServices.createPhoto(imageBuffer, filename);
         await this.repository.update(body, {
-            photoId: avatar.id
+            fileName: filename,
+            photoId: avatar.id,
         })
         return avatar
         // const queryRunner = this.connection.createQueryRunner();
@@ -103,14 +112,17 @@ export class PlacesService {
         }
     }
 
-    public async updatePlace(uuid: string, body: CreatePlaceDto): Promise<Place> {
-        const findPlace: any = this.findPlaceById(uuid);
-        findPlace.name = body.name;
-        return await this.repository.save(findPlace);
+    public async updatePlace(uuid: string, body: IPlaceCreateParams): Promise<Place> {
+        const { name, like, coordinates, file } = body
+        const findPlace: Place = await this.findPlaceById(uuid)
+        await this.repository.update({ uuid }, { name, like, coordinates })
+        return findPlace
     }
 
     public async removePlace(uuid: string): Promise<void> {
-        const findPlace: any = this.findPlaceById(uuid);
-        await this.repository.remove(findPlace);
+        // const findPlace: any = this.findPlaceById(uuid);
+        // if (!findPlace)
+        //     throw new NotFoundException("")
+        await this.repository.delete({ uuid });
     }
 }

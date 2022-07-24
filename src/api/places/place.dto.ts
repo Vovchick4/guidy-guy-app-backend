@@ -1,4 +1,5 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { Point } from 'geojson';
+import { IsBoolean, IsNotEmpty, IsString, isNumber, isArray } from 'class-validator';
 
 export class CreatePlaceDto {
     @IsString()
@@ -7,4 +8,7 @@ export class CreatePlaceDto {
 
     @IsBoolean()
     public like: boolean;
+
+    public fileName: string;
+    public coordinates: any;
 }
