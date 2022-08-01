@@ -19,10 +19,10 @@ export class QuestService {
     @Inject(UsersService)
     private readonly usersService: UsersService
 
-    async createQuest(userId: number, query: IQuestQuery): Promise<Quest> {
+    async createQuest(userId: number, body: IQuestQuery): Promise<Quest> {
         // Check Is User Exist
         await this.usersService.findOneById(userId)
-        if (!query.name) {
+        if (!body.name) {
             throw new HttpException("You must provice name QUEST", HttpStatus.UNPROCESSABLE_ENTITY)
         }
 
@@ -36,8 +36,8 @@ export class QuestService {
             skipPlaceForQuest = skipPlaceForQuest.flatMap(elem => elem)
         }
 
-        const generetedPalces = await this.placeService.generatePlaces(skipPlaceForQuest, query.count)
-        const create = this.questRepo.create({ name: query.name, userId, places: generetedPalces })
+        const generetedPalces = await this.placeService.generatePlaces(skipPlaceForQuest, body.count)
+        const create = this.questRepo.create({ name: body.name, userId, places: generetedPalces })
         return await this.questRepo.save(create)
     }
 
@@ -64,9 +64,9 @@ export class QuestService {
     async findAllQuests(): Promise<Quest[]> {
         // Find All User Quests
         const result = await this.questRepo.find({})
-        if (!result) {
-            throw new HttpException('Not Found Quest', HttpStatus.NOT_FOUND)
-        }
+        // if (!result) {
+        //     throw new HttpException('Not Found Quest', HttpStatus.NOT_FOUND)
+        // }
         return result
     }
 
@@ -82,9 +82,10 @@ export class QuestService {
     async findAllQuestsByUserId(userId: number): Promise<Quest[]> {
         // Find All User Quests
         const result = await this.questRepo.find({ where: { userId } })
-        if (!result) {
-            throw new HttpException(`Not Found Quest with id ${userId}`, HttpStatus.NOT_FOUND)
-        }
+
+        // if (!result || result.length === 0) {
+        //     throw new HttpException(`Not Found Quest with id ${userId}`, HttpStatus.NOT_FOUND)
+        // }
         return result
     }
 }

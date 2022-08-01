@@ -1,4 +1,4 @@
-import { Controller, Inject, Param, Post, Get, Query, UseGuards, ParseIntPipe } from "@nestjs/common";
+import { Controller, Inject, Param, Post, Get, Query, UseGuards, ParseIntPipe, Body } from "@nestjs/common";
 
 import JwtAuthenticationGuard from "../auth/jwt.auth.guard";
 
@@ -13,8 +13,8 @@ export class QuestController {
 
     @UseGuards(JwtAuthenticationGuard)
     @Post("create/:userId")
-    async createQuest(@Param("userId", ParseIntPipe) userId: number, @Query() query: IQuestQuery): Promise<Quest> {
-        return await this.questServices.createQuest(userId, query)
+    async createQuest(@Param("userId", ParseIntPipe) userId: number, @Body() body: IQuestQuery): Promise<Quest> {
+        return await this.questServices.createQuest(userId, body)
     }
 
     @UseGuards(JwtAuthenticationGuard)
