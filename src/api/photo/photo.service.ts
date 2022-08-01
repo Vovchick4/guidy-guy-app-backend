@@ -1,6 +1,6 @@
 import { Readable } from 'typeorm/platform/PlatformTools'
 import { QueryRunner, Repository } from 'typeorm'
-import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common'
+import { HttpCode, HttpException, HttpStatus, Injectable, NotFoundException, StreamableFile } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { join } from 'path'
 import { createReadStream } from 'fs'
@@ -21,12 +21,16 @@ export class PhotoService {
         const file = await this.photoRepository.findOne({ where: { filename: photoName } })
         if (!file)
             throw new NotFoundException();
-        const stream = Readable.from(file.data);
-        res.set({
-            'Content-Disposition': `inline; filename="${file.filename}"`,
-            'Content-Type': 'image'
-        })
-        return new StreamableFile(stream)
+        try {
+            const stream = Readable.from(file.data);
+            res.set({
+                'Content-Disposition': `inline; filename="${file.filename}"`,
+                'Content-Type': 'image'
+            })
+            return new StreamableFile(stream)
+        } catch (error) {
+            throw new HttpException("Set coorrect fileName IMAGE", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         // const stream = createReadStream(join(process.cwd(), file.filename))
         // res.set({
         //     'Content-Disposition': `inline; filename="${file.filename}"`,

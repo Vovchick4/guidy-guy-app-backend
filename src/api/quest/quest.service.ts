@@ -23,7 +23,7 @@ export class QuestService {
         // Check Is User Exist
         await this.usersService.findOneById(userId)
         if (!body.name) {
-            throw new HttpException("You must provice name QUEST", HttpStatus.UNPROCESSABLE_ENTITY)
+            throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, error: "You must provice name QUEST" }, HttpStatus.INTERNAL_SERVER_ERROR)
         }
 
         const userQuests = await this.findAllQuestsByUserId(userId);
